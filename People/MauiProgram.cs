@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
 
 namespace People;
@@ -15,12 +17,9 @@ public static class MauiProgram
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 				fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 			});
-
-#if DEBUG
-		builder.Logging.AddDebug();
-#endif
-
-		// TODO: Add statements for adding PersonRepository as a singleton
+		
+		string dbPath = FileAccessHelper.GetLocalFilePath("people.db3");
+		builder.Services.AddSingleton<PersonRepository>(s => ActivatorUtilities.CreateInstance<PersonRepository>(s, dbPath));
 
 		return builder.Build();
 	}
